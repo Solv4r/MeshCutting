@@ -147,7 +147,11 @@ public class ProceduralCubeWithUVAndColors : MonoBehaviour
             GetComponent<MeshFilter>().mesh = mesh;
 
             // Shader zuweisen
-            Shader shader = Shader.Find("Custom/UnlitVertexColor");
+            Shader shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null)
+            {
+                Debug.LogError("URP/Lit Shader wurde nicht gefunden. Ist URP aktiv?");
+            }
             Material mat = new Material(shader);
             GetComponent<MeshRenderer>().material = mat;
 
