@@ -7,6 +7,7 @@ public class SlicerPlane : MonoBehaviour
     public float planeSize = 1f;
     public Color planeColor = new Color(1f, 0f, 0f, 0.2f); // halbtransparentes Rot
 
+
     private void OnDrawGizmos()
     {
         Gizmos.color = planeColor;
