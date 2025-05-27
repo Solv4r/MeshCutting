@@ -52,46 +52,46 @@ public class MeshSliceDetector : MonoBehaviour
     void Update()
     {
         // Wenn die Plane oder das Objekt sich nicht bewegt hat, nichts tun
-        // if (!FilterMovement())
-        // {
-        //     return;
-        // }
-
-        // 1. Get the mesh bounds in world space
-        Bounds bounds = originalMeshFilter.mesh.bounds;
-
-        // 2. Get the 8 corners of the bounds
-        Vector3[] corners = new Vector3[8];
-        Vector3 center = bounds.center;
-        Vector3 ext = bounds.extents;
-
-        corners[0] = center + new Vector3(ext.x, ext.y, ext.z);
-        corners[1] = center + new Vector3(ext.x, ext.y, -ext.z);
-        corners[2] = center + new Vector3(ext.x, -ext.y, ext.z);
-        corners[3] = center + new Vector3(ext.x, -ext.y, -ext.z);
-        corners[4] = center + new Vector3(-ext.x, ext.y, ext.z);
-        corners[5] = center + new Vector3(-ext.x, ext.y, -ext.z);
-        corners[6] = center + new Vector3(-ext.x, -ext.y, ext.z);
-        corners[7] = center + new Vector3(-ext.x, -ext.y, -ext.z);
-
-        // 4. Count how many corners are on each side of the plane
-        int above = 0;
-        int below = 0;
-
-        foreach (var corner in corners)
-        {
-            float distance = slicerPlane.GetPlane().GetDistanceToPoint(transform.TransformPoint(corner));
-            if (distance > 0.001f) above++;
-            else if (distance < -0.001f) below++;
-        }
-
-        // 5. Only update if some points are on each side
-        isIntersecting = (above > 0 && below > 0);
-
-        if (!isIntersecting)
+        if (!FilterMovement())
         {
             return;
         }
+
+        // // 1. Get the mesh bounds in world space
+        // Bounds bounds = originalMeshFilter.mesh.bounds;
+
+        // // 2. Get the 8 corners of the bounds
+        // Vector3[] corners = new Vector3[8];
+        // Vector3 center = bounds.center;
+        // Vector3 ext = bounds.extents;
+
+        // corners[0] = center + new Vector3(ext.x, ext.y, ext.z);
+        // corners[1] = center + new Vector3(ext.x, ext.y, -ext.z);
+        // corners[2] = center + new Vector3(ext.x, -ext.y, ext.z);
+        // corners[3] = center + new Vector3(ext.x, -ext.y, -ext.z);
+        // corners[4] = center + new Vector3(-ext.x, ext.y, ext.z);
+        // corners[5] = center + new Vector3(-ext.x, ext.y, -ext.z);
+        // corners[6] = center + new Vector3(-ext.x, -ext.y, ext.z);
+        // corners[7] = center + new Vector3(-ext.x, -ext.y, -ext.z);
+
+        // // 4. Count how many corners are on each side of the plane
+        // int above = 0;
+        // int below = 0;
+
+        // foreach (var corner in corners)
+        // {
+        //     float distance = slicerPlane.GetPlane().GetDistanceToPoint(transform.TransformPoint(corner));
+        //     if (distance > 0.001f) above++;
+        //     else if (distance < -0.001f) below++;
+        // }
+
+        // // 5. Only update if some points are on each side
+        // isIntersecting = (above > 0 && below > 0);
+
+        // if (!isIntersecting)
+        // {
+        //     return;
+        // }
 
 
         // Wenn das cutMesh nicht gesetzt ist, weise es das Original-Mesh zu
@@ -308,6 +308,12 @@ public class MeshSliceDetector : MonoBehaviour
 
         cutMeshFilter.mesh = cutMesh;
         cutMeshFilter.sharedMesh = cutMesh;
+
+        MeshCollider meshCollider = GetComponent<MeshCollider>();
+        if (meshCollider != null)
+        {
+            meshCollider.sharedMesh = cutMesh;
+        }
 
 
         newVertices.Clear();
