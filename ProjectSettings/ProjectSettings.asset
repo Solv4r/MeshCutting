@@ -915,11 +915,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 102baeff-45d6-496c-8332-cbcacf05f215
+  cloudProjectId: 7046aac7-69d2-4deb-9270-01343dc5ff41
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: MeshCutting
-  organizationId: solv4r
+  projectName: present_future_testing
+  organizationId: bluesigma
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

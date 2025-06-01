@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
-public class MeshSliceDetector : MonoBehaviour
+public class MeshSliceDetector2 : MonoBehaviour
 {
     [SerializeField] public SlicerPlane slicerPlane;
 
