@@ -29,7 +29,7 @@ public class MeshSliceDetector : MonoBehaviour
     private Quaternion lastPlaneRotation;
 
     // Flag, ob das Mesh mit der Plane schneidet
-    private bool isIntersecting = false;
+    //private bool isIntersecting = false;
 
     void Start()
     {
@@ -46,7 +46,7 @@ public class MeshSliceDetector : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        isIntersecting = true;
+        //isIntersecting = true;
     }
 
     void Update()
@@ -129,28 +129,25 @@ public class MeshSliceDetector : MonoBehaviour
 
             if (pos && neg)
             {
+
                 List<Vector3> tempPoints = new();
                 if (d0 > 0)
                 {
                     tempPoints.Add(v0);
-                    //CreatePointMarker(v0, Color.red, "V0");
                 }
                 if (d1 > 0)
                 {
                     tempPoints.Add(v1);
-                    //CreatePointMarker(v1, Color.green, "V1");
                 }
                 if (d2 > 0)
                 {
                     tempPoints.Add(v2);
-                    //CreatePointMarker(v2, Color.blue, "V2");
                 }
                 if ((d0 > 0 && d1 < 0) || (d0 < 0 && d1 > 0))
                 {
                     // Schnittpunkt auf Kante v0-v1 berechnen
                     Vector3 intersectionPoint = Vector3.Lerp(v0, v1, Mathf.Abs(d0) / (Mathf.Abs(d0) + Mathf.Abs(d1)));
                     tempPoints.Add(intersectionPoint);
-                    //CreatePointMarker(intersectionPoint, Color.white, "Intersection_V0_V1");
                     tempIntersection.Add(intersectionPoint);
                 }
                 if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))
@@ -158,7 +155,6 @@ public class MeshSliceDetector : MonoBehaviour
                     // Schnittpunkt auf Kante v1-v2 berechnen
                     Vector3 intersectionPoint = Vector3.Lerp(v1, v2, Mathf.Abs(d1) / (Mathf.Abs(d1) + Mathf.Abs(d2)));
                     tempPoints.Add(intersectionPoint);
-                    //CreatePointMarker(intersectionPoint, Color.black, "Intersection_V1_V2");
                     tempIntersection.Add(intersectionPoint);
                 }
                 if ((d2 > 0 && d0 < 0) || (d2 < 0 && d0 > 0))
@@ -166,14 +162,24 @@ public class MeshSliceDetector : MonoBehaviour
                     // Schnittpunkt auf Kante v2-v0 berechnen
                     Vector3 intersectionPoint = Vector3.Lerp(v2, v0, Mathf.Abs(d2) / (Mathf.Abs(d2) + Mathf.Abs(d0)));
                     tempPoints.Add(intersectionPoint);
-                    //CreatePointMarker(intersectionPoint, Color.magenta, "Intersection_V2_V0");
                     tempIntersection.Add(intersectionPoint);
                 }
 
-
-                // Hier die tempPoints bearbeiten
                 if (tempPoints.Count == 3)
                 {
+                    // Orientierung der original Punkte
+                    Vector3 normal = Vector3.Cross(v1 - v0, v2 - v0).normalized;
+                    Vector3 newNormal = Vector3.Cross(tempPoints[1] - tempPoints[0], tempPoints[2] - tempPoints[0]).normalized;
+
+                    if (Vector3.Dot(normal, newNormal) < 0)
+                    {
+                        // Swap the first two points to maintain the correct winding order
+                        Vector3 p1 = tempPoints[1];
+                        Vector3 p2 = tempPoints[2];
+                        tempPoints[1] = p2;
+                        tempPoints[2] = p1;
+                    }
+
                     // Wenn 3 Punkte vorhanden sind, füge das Dreieck hinzu
                     newVertices.Add(tempPoints[0]);
                     newVertices.Add(tempPoints[1]);
@@ -182,15 +188,34 @@ public class MeshSliceDetector : MonoBehaviour
                     newTriangles.Add(newVertices.Count - 2);
                     newTriangles.Add(newVertices.Count - 1);
 
-                    newVertices.Add(tempPoints[0]);
-                    newVertices.Add(tempPoints[2]);
-                    newVertices.Add(tempPoints[1]);
-                    newTriangles.Add(newVertices.Count - 3);
-                    newTriangles.Add(newVertices.Count - 2);
-                    newTriangles.Add(newVertices.Count - 1);
+
                 }
                 else if (tempPoints.Count == 4)
                 {
+
+                    // Orientierung der original Punkte
+                    Vector3 normal = Vector3.Cross(v1 - v0, v2 - v0).normalized;
+
+                    Vector3 newNormal = Vector3.Cross(tempPoints[1] - tempPoints[0], tempPoints[2] - tempPoints[0]).normalized;
+                    Vector3 newNormal2 = Vector3.Cross(tempPoints[2] - tempPoints[0], tempPoints[3] - tempPoints[0]).normalized;
+
+
+
+                    Debug.Log("Temp Point before sort: " + tempPoints[0] + " Temp Point 1: " + tempPoints[1] + " Temp Point 2: " + tempPoints[2] + " Temp Point 3: " + tempPoints[3]);
+
+
+                    Debug.Log("Temp Point after sort: " + tempPoints[0] + " Temp Point 1: " + tempPoints[1] + " Temp Point 2: " + tempPoints[2] + " Temp Point 3: " + tempPoints[3]);
+
+                    if (Vector3.Dot(normal, newNormal) < 0)
+                    {
+                        // Swap the first two points to maintain the correct winding order
+                        Vector3 p1 = tempPoints[1];
+                        Vector3 p2 = tempPoints[2];
+                        tempPoints[1] = p2;
+                        tempPoints[2] = p1;
+                        Debug.Log("Swapped Points: " + tempPoints[0] + " " + tempPoints[1] + " " + tempPoints[2] + " " + tempPoints[3]);
+                    }
+
                     // // Wenn 4 Punkte vorhanden sind, füge zwei Dreiecke hinzu
                     newVertices.Add(tempPoints[0]);
                     newVertices.Add(tempPoints[1]);
@@ -199,6 +224,20 @@ public class MeshSliceDetector : MonoBehaviour
                     newTriangles.Add(newVertices.Count - 2);
                     newTriangles.Add(newVertices.Count - 1);
 
+                    CreatePointMarker(tempPoints[0], Color.red, "P0");
+                    CreatePointMarker(tempPoints[1], Color.green, "P1");
+                    CreatePointMarker(tempPoints[2], Color.blue, "P2");
+                    CreatePointMarker(tempPoints[3], Color.yellow, "P3");
+
+
+                    if (Vector3.Dot(normal, newNormal2) < 0)
+                    {
+                        // Swap the first two points to maintain the correct winding order
+                        Vector3 p2 = tempPoints[2];
+                        Vector3 p3 = tempPoints[3];
+                        tempPoints[2] = p3;
+                        tempPoints[3] = p2;
+                    }
                     newVertices.Add(tempPoints[0]);
                     newVertices.Add(tempPoints[2]);
                     newVertices.Add(tempPoints[3]);
@@ -206,36 +245,9 @@ public class MeshSliceDetector : MonoBehaviour
                     newTriangles.Add(newVertices.Count - 2);
                     newTriangles.Add(newVertices.Count - 1);
 
-                    newVertices.Add(tempPoints[0]);
-                    newVertices.Add(tempPoints[2]);
-                    newVertices.Add(tempPoints[1]);
-                    newTriangles.Add(newVertices.Count - 3);
-                    newTriangles.Add(newVertices.Count - 2);
-                    newTriangles.Add(newVertices.Count - 1);
 
-                    newVertices.Add(tempPoints[0]);
-                    newVertices.Add(tempPoints[3]);
-                    newVertices.Add(tempPoints[2]);
-                    newTriangles.Add(newVertices.Count - 3);
-                    newTriangles.Add(newVertices.Count - 2);
-                    newTriangles.Add(newVertices.Count - 1);
-
-                    newVertices.Add(tempPoints[1]);
-                    newVertices.Add(tempPoints[2]);
-                    newVertices.Add(tempPoints[3]);
-                    newTriangles.Add(newVertices.Count - 3);
-                    newTriangles.Add(newVertices.Count - 2);
-                    newTriangles.Add(newVertices.Count - 1);
-
-                    newVertices.Add(tempPoints[3]);
-                    newVertices.Add(tempPoints[2]);
-                    newVertices.Add(tempPoints[1]);
-                    newTriangles.Add(newVertices.Count - 3);
-                    newTriangles.Add(newVertices.Count - 2);
-                    newTriangles.Add(newVertices.Count - 1);
                 }
-                // Intersection part
-
+                tempPoints.Clear();
             }
             if (pos && !neg)
             {
@@ -258,37 +270,37 @@ public class MeshSliceDetector : MonoBehaviour
 
         Debug.Log("Temp Intersection Count: " + tempIntersection.Count);
 
-        for (int i = 1; i < tempIntersection.Count - 2; i++)
-        {
-            newVertices.Add(tempIntersection[0]);
-            newTriangles.Add(newVertices.Count - 1);
-            newVertices.Add(tempIntersection[i]);
-            newTriangles.Add(newVertices.Count - 1);
-            newVertices.Add(tempIntersection[i + 1]);
-            newTriangles.Add(newVertices.Count - 1);
+        // for (int i = 1; i < tempIntersection.Count - 2; i++)
+        // {
+        //     newVertices.Add(tempIntersection[0]);
+        //     newTriangles.Add(newVertices.Count - 1);
+        //     newVertices.Add(tempIntersection[i]);
+        //     newTriangles.Add(newVertices.Count - 1);
+        //     newVertices.Add(tempIntersection[i + 1]);
+        //     newTriangles.Add(newVertices.Count - 1);
 
-            //CreateDebugPoints(tempIntersection[0], tempIntersection[i], tempIntersection[i + 1]);
+        //     //CreateDebugPoints(tempIntersection[0], tempIntersection[i], tempIntersection[i + 1]);
 
 
-            // newVertices.Add(tempIntersection[0]);
-            // newTriangles.Add(newVertices.Count - 1);
-            // newVertices.Add(tempIntersection[i + 1]);
-            // newTriangles.Add(newVertices.Count - 1);
-            // newVertices.Add(tempIntersection[i]);
-            // newTriangles.Add(newVertices.Count - 1);
+        //     newVertices.Add(tempIntersection[0]);
+        //     newTriangles.Add(newVertices.Count - 1);
+        //     newVertices.Add(tempIntersection[i + 1]);
+        //     newTriangles.Add(newVertices.Count - 1);
+        //     newVertices.Add(tempIntersection[i]);
+        //     newTriangles.Add(newVertices.Count - 1);
 
-        }
-        for (int i = tempIntersection.Count - 2; i > 0; i--)
-        {
-            newVertices.Add(tempIntersection[0]);
-            newTriangles.Add(newVertices.Count - 1);
+        // }
+        // for (int i = tempIntersection.Count - 2; i > 0; i--)
+        // {
+        //     newVertices.Add(tempIntersection[0]);
+        //     newTriangles.Add(newVertices.Count - 1);
 
-            newVertices.Add(tempIntersection[i + 1]);
-            newTriangles.Add(newVertices.Count - 1);
+        //     newVertices.Add(tempIntersection[i + 1]);
+        //     newTriangles.Add(newVertices.Count - 1);
 
-            newVertices.Add(tempIntersection[i]);
-            newTriangles.Add(newVertices.Count - 1);
-        }
+        //     newVertices.Add(tempIntersection[i]);
+        //     newTriangles.Add(newVertices.Count - 1);
+        // }
         tempIntersection.Clear();
 
 
