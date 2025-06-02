@@ -362,6 +362,9 @@ public class MeshSliceDetectorTest : MonoBehaviour
             }
             tempTriangle.Clear();
         }
+
+
+
         cutMesh.Clear();
 
         for (int i = 0; i < newVertices.Count; i++)
