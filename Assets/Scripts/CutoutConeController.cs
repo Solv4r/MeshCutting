@@ -12,14 +12,16 @@ public class CutoutConeController : MonoBehaviour
     private Shader targetShader; // Box object cutout shader
     private Shader targetShader2; // Any object cutout shader
     private Shader targetShader3; // Reversed cutout shader
-
+    private Shader targetShader4; // Any object cutout material
+    
     void Start()
     {
         // You must set this to match your shader name exactly
         targetShader = Shader.Find("Shader Graphs/Cutout Shader BOOLEAN");
+        targetShader4 = Shader.Find("Shader Graphs/Cutout Shader BOOLEAN 1");
         targetShader2 = Shader.Find("Shader Graphs/Cutout Shader BOOLEAN 2");
         targetShader3 = Shader.Find("Shader Graphs/Cutout Shader REVERSED");
-        if (targetShader == null || targetShader2 == null || targetShader3 == null)
+        if (targetShader == null || targetShader2 == null || targetShader3 == null || targetShader4 == null)
         {
             Debug.LogError("Cutout shader not found!");
             return;
@@ -32,7 +34,7 @@ public class CutoutConeController : MonoBehaviour
         {
             foreach (Material mat in rend.materials)
             {
-                if (mat.shader == targetShader || mat.shader == targetShader2 || mat.shader == targetShader3)
+                if (mat.shader == targetShader || mat.shader == targetShader2 || mat.shader == targetShader3 || mat.shader == targetShader4)
                 {
                     // Make sure we get a unique instance of the material (not sharedMaterial)
                     Material runtimeMat = rend.material;
