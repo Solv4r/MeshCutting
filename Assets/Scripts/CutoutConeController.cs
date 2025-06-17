@@ -3,21 +3,23 @@ using UnityEngine;
 
 public class CutoutConeController : MonoBehaviour
 {
-    public Transform coneOrigin;      // The tip of the cone
-    public Transform coneTransform;   // The cone object (for direction)
-    public float coneAngle = -10f;    // Cone angle in degrees
-    public float coneRange = 64f;
+    public Transform coneOrigin;        // The tip of the cone
+    public Transform coneTransform;     // The cone object (for direction)
+    public float coneAngle = -10f;      // Cone angle in degrees
+    public float coneRange = 64f;       // Cone range in world units
 
     private List<Material> affectedMaterials = new List<Material>();
-    private Shader targetShader; // Assign this to your custom cutout shader
-    private Shader targetShader2; // Assign this to your custom cutout shader
+    private Shader targetShader; // Box object cutout shader
+    private Shader targetShader2; // Any object cutout shader
+    private Shader targetShader3; // Reversed cutout shader
 
     void Start()
     {
         // You must set this to match your shader name exactly
         targetShader = Shader.Find("Shader Graphs/Cutout Shader BOOLEAN");
         targetShader2 = Shader.Find("Shader Graphs/Cutout Shader BOOLEAN 2");
-        if (targetShader == null || targetShader2 == null)
+        targetShader3 = Shader.Find("Shader Graphs/Cutout Shader REVERSED");
+        if (targetShader == null || targetShader2 == null || targetShader3 == null)
         {
             Debug.LogError("Cutout shader not found!");
             return;
@@ -30,7 +32,7 @@ public class CutoutConeController : MonoBehaviour
         {
             foreach (Material mat in rend.materials)
             {
-                if (mat.shader == targetShader || mat.shader == targetShader2)
+                if (mat.shader == targetShader || mat.shader == targetShader2 || mat.shader == targetShader3)
                 {
                     // Make sure we get a unique instance of the material (not sharedMaterial)
                     Material runtimeMat = rend.material;
