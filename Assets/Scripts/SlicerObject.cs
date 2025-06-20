@@ -11,6 +11,9 @@ public class SlicerObject : MonoBehaviour
     private Mesh mesh;
     private MeshFilter meshFilter;
 
+    private Vector3 coneBase;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -45,6 +48,7 @@ public class SlicerObject : MonoBehaviour
         vertices[0] = Vector3.zero; // apex vertex 
         normals[0] = Vector3.up; // Normal for the apex vertex
 
+
         // Create the base vertices in a circle
         // The base vertices will be positioned in a circle around the origin
         for (int i = 0; i < segments; i++)
@@ -58,14 +62,14 @@ public class SlicerObject : MonoBehaviour
         vertices[segments + 1] = new Vector3(0, coneLength, 0); // Base vertex
         normals[segments + 1] = Vector3.up; // Normal for the base vertex
 
-        // Create triangles for the base
-        for (int i = 0; i < segments; i++)
-        {
-            int nextIndex = (i + 1) % segments;
-            triangles[i * 3] = segments + 1; // Base vertex
-            triangles[i * 3 + 1] = nextIndex + 1; // Next base vertex
-            triangles[i * 3 + 2] = i + 1; // Current base vertex
-        }
+        // // Create triangles for the base
+        // for (int i = 0; i < segments; i++)
+        // {
+        //     int nextIndex = (i + 1) % segments;
+        //     triangles[i * 3] = segments + 1; // Base vertex
+        //     triangles[i * 3 + 1] = nextIndex + 1; // Next base vertex
+        //     triangles[i * 3 + 2] = i + 1; // Current base vertex
+        // }
 
         // Create triangles for the sides
         for (int i = 0; i < segments; i++)
@@ -76,7 +80,7 @@ public class SlicerObject : MonoBehaviour
             triangles[segments * 3 + i * 3 + 1] = i + 1; // Next base vertex
         }
 
-
+        coneBase = new Vector3(-coneLength / 2, 0, 0); // Set the cone base position
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.normals = normals;
@@ -126,5 +130,8 @@ public class SlicerObject : MonoBehaviour
         float distance = -Vector3.Dot(normal, v0);
         return new Plane(normal, distance);
     }
-
+    public Vector3 GetBaseCenter()
+    {
+        return coneBase;
+    }
 }

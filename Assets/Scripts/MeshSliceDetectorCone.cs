@@ -105,7 +105,7 @@ public class MeshSliceDetectorCone : MonoBehaviour
             Vector3 p1 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 1]]);
             Vector3 p2 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 2]]);
             Plane plane = new(p0, p1, p2);
-            Vector3 segmentMidpoint = (p0 + p1 + p2) / 3f;
+            Vector3 coneBase = cone.GetBaseCenter();
 
             for (int j = 0; j < triangles.Length; j += 3)
             {
@@ -115,7 +115,7 @@ public class MeshSliceDetectorCone : MonoBehaviour
 
                 Vector3 meshMidpoint = (v0 + v1 + v2) / 3f;
 
-                float distance = Vector3.Distance(segmentMidpoint, meshMidpoint);
+                float distance = Vector3.Distance(coneBase, meshMidpoint);
 
                 if (distance > maxDistance)
                 {
@@ -182,7 +182,7 @@ public class MeshSliceDetectorCone : MonoBehaviour
                     newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
                     newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
                 }
-            } 
+            }
         }
         cutMesh.Clear();
 
