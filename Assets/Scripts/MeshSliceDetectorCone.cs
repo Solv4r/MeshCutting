@@ -34,6 +34,8 @@ public class MeshSliceDetectorCone : MonoBehaviour
 
     [SerializeField] private bool isFuture = false;
     [SerializeField] private bool isPast = false;
+    private bool changed = false;
+    private ShiftTime shiftTime;
 
 
     // Approximate comparer for Vector3 to handle floating point precision issues
@@ -82,9 +84,17 @@ public class MeshSliceDetectorCone : MonoBehaviour
         coneMesh = cone.GetComponent<MeshFilter>().sharedMesh;
         coneTriangles = coneMesh.triangles;
         coneVertices = coneMesh.vertices;
+        shiftTime = FindFirstObjectByType<ShiftTime>();
     }
     void Update()
     {
+        if (isFuture != shiftTime.GetPresent() || isPast != shiftTime.GetPast())
+        {
+            // setze boolean für Änderungen
+            isFuture = shiftTime.GetPresent();
+            isPast = shiftTime.GetPast();
+            changed = true;
+        }
         // Wenn die Plane oder das Objekt sich nicht bewegt hat, nichts tun
         if (!FilterMovement())
         {
@@ -211,9 +221,9 @@ public class MeshSliceDetectorCone : MonoBehaviour
                     if (distance > maxDistance)
                     {
                         //AddTriangle(newVertices, newTriangles, v0, v1, v2);
-                        newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
-                        newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
-                        newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
+                        //newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
+                        //newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
+                        //newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
                         continue;
                     }
 
@@ -327,6 +337,11 @@ public class MeshSliceDetectorCone : MonoBehaviour
 
     private bool FilterMovement()
     {
+        if (changed)
+        {
+            changed = false;
+            return true;
+        }
         bool coneMoved = Vector3.Distance(cone.transform.position, conePosition) >= 0.01f ||
                            Quaternion.Angle(cone.transform.rotation, coneRotation) >= 1f;
 

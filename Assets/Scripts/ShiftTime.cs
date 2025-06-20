@@ -118,4 +118,13 @@ public class ShiftTime : MonoBehaviour
             isNear = false;
         }
     }
+
+    public bool GetPresent()
+    {
+        return inPresent;
+    }
+    public bool GetPast()
+    {
+        return inPast;
+    }
 }
