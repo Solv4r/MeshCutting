@@ -13,7 +13,7 @@ public class CutoutConeController : MonoBehaviour
     private Shader targetShader2; // Any object cutout shader
     private Shader targetShader3; // Reversed cutout shader
     private Shader targetShader4; // Any object cutout material
-    
+
     void Start()
     {
         // You must set this to match your shader name exactly
@@ -55,6 +55,25 @@ public class CutoutConeController : MonoBehaviour
             mat.SetVector("_ConeDirection", direction);
             mat.SetFloat("_ConeAngle", coneAngle);
             mat.SetFloat("_ConeRange", coneRange);
+        }
+    }
+
+    public void RefreshMateirals()
+    {
+        affectedMaterials.Clear();
+
+        Renderer[] renderers = Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None);
+        foreach (Renderer rend in renderers)
+        {
+            foreach (Material mat in rend.materials)
+            {
+                if (mat.shader == targetShader || mat.shader == targetShader2 || mat.shader == targetShader3 || mat.shader == targetShader4)
+                {
+                    // Make sure we get a unique instance of the material (not sharedMaterial)
+                    Material runtimeMat = rend.material;
+                    affectedMaterials.Add(runtimeMat);
+                }
+            }
         }
     }
 }

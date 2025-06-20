@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5636674641008453929}
   - component: {fileID: 7961873237562597876}
   - component: {fileID: 2487085380258326364}
-  - component: {fileID: 794771082714271827}
+  - component: {fileID: 4466351630991106233}
   m_Layer: 0
   m_Name: Cutout Cube 2
   m_TagString: Untagged
@@ -110,7 +110,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &794771082714271827
+--- !u!114 &4466351630991106233
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,11 +119,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 477576791743310677}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a50eb51ff8fa534c84903f09c76b4ca, type: 3}
+  m_Script: {fileID: 11500000, guid: cad1b4cbbef357e46acdbc05a25b4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slicerPlaneLeft: {fileID: 0}
-  slicerPlaneRight: {fileID: 0}
+  maxDistance: 50
+  slicerObject: {fileID: 0}
 --- !u!1 &2179943171021085031
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 8086718607629418068}
   - component: {fileID: 4017276013783367557}
   - component: {fileID: 3399799554753445081}
-  - component: {fileID: 4655077941616093541}
+  - component: {fileID: 765264883791722407}
   m_Layer: 0
   m_Name: Cutout Cube 1
   m_TagString: Untagged
@@ -268,7 +268,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &4655077941616093541
+--- !u!114 &765264883791722407
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -277,11 +277,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4850545851371906615}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a50eb51ff8fa534c84903f09c76b4ca, type: 3}
+  m_Script: {fileID: 11500000, guid: cad1b4cbbef357e46acdbc05a25b4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slicerPlaneLeft: {fileID: 0}
-  slicerPlaneRight: {fileID: 0}
+  maxDistance: 50
+  slicerObject: {fileID: 0}
 --- !u!1 &8513596250334856914
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 2801201531478980588}
   - component: {fileID: 4338780522059412261}
   - component: {fileID: 3761728557737324409}
-  - component: {fileID: 2862504882363030823}
+  - component: {fileID: 8106050520349620691}
   m_Layer: 0
   m_Name: Cutout Cube 3
   m_TagString: Untagged
@@ -392,7 +392,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2862504882363030823
+--- !u!114 &8106050520349620691
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -401,8 +401,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 8513596250334856914}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a50eb51ff8fa534c84903f09c76b4ca, type: 3}
+  m_Script: {fileID: 11500000, guid: cad1b4cbbef357e46acdbc05a25b4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slicerPlaneLeft: {fileID: 0}
-  slicerPlaneRight: {fileID: 0}
+  maxDistance: 50
+  slicerObject: {fileID: 0}

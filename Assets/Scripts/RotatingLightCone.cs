@@ -37,7 +37,7 @@ public class RotatingLightCone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Player entered the trigger area.");
+            Debug.Log("Player entered the trigger area of RotatingLightCone.");
             isNear = true;
         }
     }
@@ -46,7 +46,7 @@ public class RotatingLightCone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Player exited the trigger area.");
+            Debug.Log("Player exited the trigger area of RotatingLightCone.");
             isNear = false;
         }
     }

@@ -102,10 +102,12 @@ public class SlicerObject : MonoBehaviour
         {
             meshRenderer = gameObject.AddComponent<MeshRenderer>();
         }
+        // Disable mesh renderer
+        meshRenderer.enabled = false;
         // Set a default material for the MeshRenderer
-        meshRenderer.material = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+
         // You can also set the material properties here if needed
-        meshRenderer.material.color = Color.white; // Set a default color for the material
+
 
         // if (meshCollider == null)
         // {

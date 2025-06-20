@@ -197,9 +197,9 @@ public class MeshSliceDetectorCone : MonoBehaviour
         cutMesh.RecalculateNormals();
         cutMesh.RecalculateBounds();
 
-        // Assign mehsh
-        cutMeshFilter.sharedMesh = cutMesh;
-        cutMeshFilter.mesh = cutMesh;
+        // Assign mesh
+        // cutMeshFilter.sharedMesh = cutMesh;
+        // cutMeshFilter.mesh = cutMesh;
 
         MeshCollider meshCollider = GetComponent<MeshCollider>();
         if (meshCollider != null)

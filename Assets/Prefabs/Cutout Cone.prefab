@@ -121,52 +121,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1721829482726849311
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5491436089584247496}
-  - component: {fileID: 7809278267632442661}
-  m_Layer: 0
-  m_Name: SlicerPlaneLinks
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5491436089584247496
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721829482726849311}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.05993778, y: -0.05993778, z: 0.7045619, w: 0.7045619}
-  m_LocalPosition: {x: -10.979768, y: 0, z: 64.06595}
-  m_LocalScale: {x: 3, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7147664717951728587}
-  m_LocalEulerAnglesHint: {x: 0, y: -9.725, z: 90}
---- !u!114 &7809278267632442661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721829482726849311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4798681fbf2ca7d4d8dc017176e6b92a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  planeSize: 65
-  planeColor: {r: 1, g: 0, b: 0, a: 0.2}
 --- !u!1 &1896402232214355525
 GameObject:
   m_ObjectHideFlags: 0
@@ -2622,7 +2576,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 3897
+  m_VersionIndex: 3903
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2756,8 +2710,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a50eb51ff8fa534c84903f09c76b4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slicerPlaneLeft: {fileID: 7809278267632442661}
-  slicerPlaneRight: {fileID: 8794779511651490608}
+  slicerPlaneLeft: {fileID: 0}
+  slicerPlaneRight: {fileID: 0}
 --- !u!1 &5964453032250394496
 GameObject:
   m_ObjectHideFlags: 0
@@ -2789,10 +2743,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4044168360475881422}
   - {fileID: 3846925252044486630}
   - {fileID: 2738470282171953461}
-  - {fileID: 5491436089584247496}
-  - {fileID: 3926996116632902710}
   - {fileID: 1491823186220753594}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
@@ -2834,7 +2787,7 @@ MonoBehaviour:
   targetA: {fileID: 0}
   targetB: {fileID: 0}
   rotationSpeed: 2
---- !u!1 &7403144106416510442
+--- !u!1 &8917000455300241955
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2842,44 +2795,45 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3926996116632902710}
-  - component: {fileID: 8794779511651490608}
+  - component: {fileID: 4044168360475881422}
+  - component: {fileID: 7878182166994208955}
   m_Layer: 0
-  m_Name: SlicerPlane Rechts
+  m_Name: ConeScript
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3926996116632902710
+--- !u!4 &4044168360475881422
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7403144106416510442}
+  m_GameObject: {fileID: 8917000455300241955}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7045619, y: 0.7045619, z: -0.05993778, w: -0.05993778}
-  m_LocalPosition: {x: 10.979753, y: 0, z: 64.06595}
-  m_LocalScale: {x: 3, y: 1, z: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7147664717951728587}
-  m_LocalEulerAnglesHint: {x: 0, y: 189.725, z: 90}
---- !u!114 &8794779511651490608
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &7878182166994208955
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7403144106416510442}
+  m_GameObject: {fileID: 8917000455300241955}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4798681fbf2ca7d4d8dc017176e6b92a, type: 3}
+  m_Script: {fileID: 11500000, guid: 680a920db70177344a9fd13d791c41b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  planeSize: 65
-  planeColor: {r: 1, g: 0, b: 0, a: 0.2}
+  coneLength: 100
+  segments: 45
+  radius: 17
 --- !u!1001 &3646161990359725597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2890,7 +2844,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1718602876054929529, guid: 02ede8b51f455c142be55fd194d9d33b, type: 3}
       propertyPath: m_VersionIndex
-      value: 1987
+      value: 1993
       objectReference: {fileID: 0}
     - target: {fileID: 2751066378945238183, guid: 02ede8b51f455c142be55fd194d9d33b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2946,7 +2900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7800817403798590197, guid: 02ede8b51f455c142be55fd194d9d33b, type: 3}
       propertyPath: m_VersionIndex
-      value: 1987
+      value: 1993
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
