@@ -1096,7 +1096,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cad1b4cbbef357e46acdbc05a25b4f17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxDistance: 45
   slicerObject: {fileID: 1694816750}
+  isFuture: 1
+  isPast: 0
 --- !u!23 &1213479723
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -80,7 +80,7 @@ public class SlicerObject : MonoBehaviour
             triangles[segments * 3 + i * 3 + 1] = i + 1; // Next base vertex
         }
 
-        coneBase = new Vector3(-coneLength / 2, 0, 0); // Set the cone base position
+        // Set the cone base vertex to local position
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.normals = normals;
@@ -134,6 +134,7 @@ public class SlicerObject : MonoBehaviour
     }
     public Vector3 GetBaseCenter()
     {
+        coneBase = transform.TransformPoint(new Vector3(0, coneLength, 0)); // Get the world position of the cone base vertex
         return coneBase;
     }
 }
