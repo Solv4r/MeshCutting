@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using NUnit.Framework;
 
 public class MeshSliceDetectorCone : MonoBehaviour
 {
@@ -31,7 +32,8 @@ public class MeshSliceDetectorCone : MonoBehaviour
     private Vector3 conePosition;
     private Quaternion coneRotation;
 
-
+    [SerializeField] private bool isFuture = false;
+    [SerializeField] private bool isPast = false;
 
 
     // Approximate comparer for Vector3 to handle floating point precision issues
@@ -97,90 +99,177 @@ public class MeshSliceDetectorCone : MonoBehaviour
         newVertices.Clear();
         newTriangles.Clear();
         vertexToIndex.Clear();
-        //intersectionPoints.Clear();
 
-        for (int i = 0; i < coneTriangles.Length / 3; i++)
+        if (isFuture)
         {
-            Vector3 p0 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3]]);
-            Vector3 p1 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 1]]);
-            Vector3 p2 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 2]]);
-            Plane plane = new(p0, p1, p2);
-            Vector3 coneBase = cone.GetBaseCenter();
-
-            for (int j = 0; j < triangles.Length; j += 3)
+            for (int i = 0; i < coneTriangles.Length / 3; i++)
             {
-                Vector3 v0 = transform.TransformPoint(vertices[triangles[j]]);
-                Vector3 v1 = transform.TransformPoint(vertices[triangles[j + 1]]);
-                Vector3 v2 = transform.TransformPoint(vertices[triangles[j + 2]]);
+                Vector3 p0 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3]]);
+                Vector3 p1 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 1]]);
+                Vector3 p2 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 2]]);
+                Plane plane = new(p0, p1, p2);
+                Vector3 coneBase = cone.GetBaseCenter();
 
-                Vector3 meshMidpoint = (v0 + v1 + v2) / 3f;
-
-                float distance = Vector3.Distance(coneBase, meshMidpoint);
-
-                if (distance > maxDistance)
+                for (int j = 0; j < triangles.Length; j += 3)
                 {
-                    //AddTriangle(newVertices, newTriangles, v0, v1, v2);
-                    newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
-                    newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
-                    newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
-                    continue;
-                }
+                    Vector3 v0 = transform.TransformPoint(vertices[triangles[j]]);
+                    Vector3 v1 = transform.TransformPoint(vertices[triangles[j + 1]]);
+                    Vector3 v2 = transform.TransformPoint(vertices[triangles[j + 2]]);
 
-                float d0 = plane.GetDistanceToPoint(v0);
-                float d1 = plane.GetDistanceToPoint(v1);
-                float d2 = plane.GetDistanceToPoint(v2);
+                    Vector3 meshMidpoint = (v0 + v1 + v2) / 3f;
 
-                // Wenn mindestens ein Punkt auf anderer Seite als ein anderer liegt → Schnitt
-                bool pos = d0 > 0 || d1 > 0 || d2 > 0;
-                bool neg = d0 < 0 || d1 < 0 || d2 < 0;
+                    float distance = Vector3.Distance(coneBase, meshMidpoint);
 
-                if (pos && neg)
-                {
-
-                    List<Vector3> tempPoints = new();
-                    if (d0 > 0) tempPoints.Add(v0);
-                    if (d1 > 0) tempPoints.Add(v1);
-                    if (d2 > 0) tempPoints.Add(v2);
-                    if ((d0 > 0 && d1 < 0) || (d0 < 0 && d1 > 0))
+                    if (distance > maxDistance)
                     {
-                        // Schnittpunkt auf Kante v0-v1 berechnen
-                        Vector3 intersectionPoint = Vector3.Lerp(v0, v1, Mathf.Abs(d0) / (Mathf.Abs(d0) + Mathf.Abs(d1)));
-                        tempPoints.Add(intersectionPoint);
-                        intersectionPoints.Add(intersectionPoint);
+                        //AddTriangle(newVertices, newTriangles, v0, v1, v2);
+                        newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
+                        continue;
                     }
-                    if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))
+
+                    float d0 = plane.GetDistanceToPoint(v0);
+                    float d1 = plane.GetDistanceToPoint(v1);
+                    float d2 = plane.GetDistanceToPoint(v2);
+
+                    // Wenn mindestens ein Punkt auf anderer Seite als ein anderer liegt → Schnitt
+                    bool pos = d0 > 0 || d1 > 0 || d2 > 0;
+                    bool neg = d0 < 0 || d1 < 0 || d2 < 0;
+
+                    if (pos && neg)
                     {
-                        // Schnittpunkt auf Kante v1-v2 berechnen
-                        Vector3 intersectionPoint = Vector3.Lerp(v1, v2, Mathf.Abs(d1) / (Mathf.Abs(d1) + Mathf.Abs(d2)));
-                        tempPoints.Add(intersectionPoint);
-                        intersectionPoints.Add(intersectionPoint);
-                    }
-                    if ((d2 > 0 && d0 < 0) || (d2 < 0 && d0 > 0))
-                    {
-                        // Schnittpunkt auf Kante v2-v0 berechnen
-                        Vector3 intersectionPoint = Vector3.Lerp(v2, v0, Mathf.Abs(d2) / (Mathf.Abs(d2) + Mathf.Abs(d0)));
-                        tempPoints.Add(intersectionPoint);
-                        intersectionPoints.Add(intersectionPoint);
-                    }
-                    if (tempPoints.Count >= 3)
-                    {
-                        for (int k = 1; k < tempPoints.Count - 1; k++)
+
+                        List<Vector3> tempPoints = new();
+                        if (d0 > 0) tempPoints.Add(v0);
+                        if (d1 > 0) tempPoints.Add(v1);
+                        if (d2 > 0) tempPoints.Add(v2);
+                        if ((d0 > 0 && d1 < 0) || (d0 < 0 && d1 > 0))
                         {
-
-                            //AddTriangle(newVertices, newTriangles, tempPoints[0], tempPoints[k], tempPoints[k + 1]);
-                            newTriangles.Add(GetOrAddVertex(tempPoints[0], vertexToIndex, newVertices));
-                            newTriangles.Add(GetOrAddVertex(tempPoints[k], vertexToIndex, newVertices));
-                            newTriangles.Add(GetOrAddVertex(tempPoints[k + 1], vertexToIndex, newVertices));
+                            // Schnittpunkt auf Kante v0-v1 berechnen
+                            Vector3 intersectionPoint = Vector3.Lerp(v0, v1, Mathf.Abs(d0) / (Mathf.Abs(d0) + Mathf.Abs(d1)));
+                            tempPoints.Add(intersectionPoint);
+                            intersectionPoints.Add(intersectionPoint);
                         }
-                        tempPoints.Clear();
+                        if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))
+                        {
+                            // Schnittpunkt auf Kante v1-v2 berechnen
+                            Vector3 intersectionPoint = Vector3.Lerp(v1, v2, Mathf.Abs(d1) / (Mathf.Abs(d1) + Mathf.Abs(d2)));
+                            tempPoints.Add(intersectionPoint);
+                            intersectionPoints.Add(intersectionPoint);
+                        }
+                        if ((d2 > 0 && d0 < 0) || (d2 < 0 && d0 > 0))
+                        {
+                            // Schnittpunkt auf Kante v2-v0 berechnen
+                            Vector3 intersectionPoint = Vector3.Lerp(v2, v0, Mathf.Abs(d2) / (Mathf.Abs(d2) + Mathf.Abs(d0)));
+                            tempPoints.Add(intersectionPoint);
+                            intersectionPoints.Add(intersectionPoint);
+                        }
+                        if (tempPoints.Count >= 3)
+                        {
+                            for (int k = 1; k < tempPoints.Count - 1; k++)
+                            {
+
+                                //AddTriangle(newVertices, newTriangles, tempPoints[0], tempPoints[k], tempPoints[k + 1]);
+                                newTriangles.Add(GetOrAddVertex(tempPoints[0], vertexToIndex, newVertices));
+                                newTriangles.Add(GetOrAddVertex(tempPoints[k], vertexToIndex, newVertices));
+                                newTriangles.Add(GetOrAddVertex(tempPoints[k + 1], vertexToIndex, newVertices));
+                            }
+                            tempPoints.Clear();
+                        }
+                    }
+                    if (pos && !neg)
+                    {
+                        //AddTriangle(newVertices, newTriangles, v0, v1, v2);
+                        newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
                     }
                 }
-                if (pos && !neg)
+            }
+        }
+        if (isPast)
+        {
+            for (int i = 0; i < coneTriangles.Length / 3; i++)
+            {
+                Vector3 p0 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3]]);
+                Vector3 p1 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 1]]);
+                Vector3 p2 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 2]]);
+                Plane plane = new(p0, p1, p2);
+                Vector3 coneBase = cone.GetBaseCenter();
+
+                for (int j = 0; j < triangles.Length; j += 3)
                 {
-                    //AddTriangle(newVertices, newTriangles, v0, v1, v2);
-                    newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
-                    newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
-                    newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
+                    Vector3 v0 = transform.TransformPoint(vertices[triangles[j]]);
+                    Vector3 v1 = transform.TransformPoint(vertices[triangles[j + 1]]);
+                    Vector3 v2 = transform.TransformPoint(vertices[triangles[j + 2]]);
+
+                    Vector3 meshMidpoint = (v0 + v1 + v2) / 3f;
+
+                    float distance = Vector3.Distance(coneBase, meshMidpoint);
+
+                    if (distance > maxDistance)
+                    {
+                        //AddTriangle(newVertices, newTriangles, v0, v1, v2);
+                        newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
+                        continue;
+                    }
+
+                    float d0 = plane.GetDistanceToPoint(v0);
+                    float d1 = plane.GetDistanceToPoint(v1);
+                    float d2 = plane.GetDistanceToPoint(v2);
+
+                    // Wenn mindestens ein Punkt auf anderer Seite als ein anderer liegt → Schnitt
+                    bool pos = d0 > 0 || d1 > 0 || d2 > 0;
+                    bool neg = d0 < 0 || d1 < 0 || d2 < 0;
+
+                    if (pos && neg)
+                    {
+
+                        List<Vector3> tempPoints = new();
+                        if (d0 <= 0) tempPoints.Add(v0);
+                        if (d1 <= 0) tempPoints.Add(v1);
+                        if (d2 <= 0) tempPoints.Add(v2);
+                        if ((d0 > 0 && d1 < 0) || (d0 < 0 && d1 > 0))
+                        {
+                            // Schnittpunkt auf Kante v0-v1 berechnen
+                            Vector3 intersectionPoint = Vector3.Lerp(v0, v1, Mathf.Abs(d0) / (Mathf.Abs(d0) + Mathf.Abs(d1)));
+                            tempPoints.Add(intersectionPoint);
+                            intersectionPoints.Add(intersectionPoint);
+                        }
+                        if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))
+                        {
+                            // Schnittpunkt auf Kante v1-v2 berechnen
+                            Vector3 intersectionPoint = Vector3.Lerp(v1, v2, Mathf.Abs(d1) / (Mathf.Abs(d1) + Mathf.Abs(d2)));
+                            tempPoints.Add(intersectionPoint);
+                            intersectionPoints.Add(intersectionPoint);
+                        }
+                        if ((d2 > 0 && d0 < 0) || (d2 < 0 && d0 > 0))
+                        {
+                            // Schnittpunkt auf Kante v2-v0 berechnen
+                            Vector3 intersectionPoint = Vector3.Lerp(v2, v0, Mathf.Abs(d2) / (Mathf.Abs(d2) + Mathf.Abs(d0)));
+                            tempPoints.Add(intersectionPoint);
+                            intersectionPoints.Add(intersectionPoint);
+                        }
+                        if (tempPoints.Count >= 3)
+                        {
+                            for (int k = 1; k < tempPoints.Count - 1; k++)
+                            {
+                                newTriangles.Add(GetOrAddVertex(tempPoints[0], vertexToIndex, newVertices));
+                                newTriangles.Add(GetOrAddVertex(tempPoints[k], vertexToIndex, newVertices));
+                                newTriangles.Add(GetOrAddVertex(tempPoints[k + 1], vertexToIndex, newVertices));
+                            }
+                            tempPoints.Clear();
+                        }
+                    }
+                    if (!pos && neg)
+                    {
+                        newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
+                        newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
+                    }
                 }
             }
         }
@@ -207,6 +296,7 @@ public class MeshSliceDetectorCone : MonoBehaviour
             meshCollider.sharedMesh = cutMesh;
         }
     }
+
 
 
     void CreateDebugPoints(Vector3 v0, Vector3 v1, Vector3 v2)
