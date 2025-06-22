@@ -1,8 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using NUnit.Framework;
-
 public class MeshSliceDetectorCone : MonoBehaviour
 {
 
@@ -36,6 +33,7 @@ public class MeshSliceDetectorCone : MonoBehaviour
     [SerializeField] private bool isPast = false;
     private bool changed = false;
     private ShiftTime shiftTime;
+    List<Plane> conePlanes = new();
 
 
     // Approximate comparer for Vector3 to handle floating point precision issues
@@ -109,7 +107,6 @@ public class MeshSliceDetectorCone : MonoBehaviour
         newVertices.Clear();
         newTriangles.Clear();
         vertexToIndex.Clear();
-
         if (isFuture)
         {
             for (int i = 0; i < coneTriangles.Length / 3; i++)
@@ -200,6 +197,59 @@ public class MeshSliceDetectorCone : MonoBehaviour
         }
         if (isPast)
         {
+            conePlanes.Clear();
+            for (int i = 0; i < coneTriangles.Length / 3; i++)
+            {
+                Vector3 p0 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3]]);
+                Vector3 p1 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 1]]);
+                Vector3 p2 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3 + 2]]);
+                conePlanes.Add(new Plane(p0, p1, p2));
+            }
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                Vector3 v0 = transform.TransformPoint(vertices[triangles[i]]);
+                Vector3 v1 = transform.TransformPoint(vertices[triangles[i + 1]]);
+                Vector3 v2 = transform.TransformPoint(vertices[triangles[i + 2]]);
+
+                bool d0inside = true;
+                bool d1inside = true;
+                bool d2inside = true;
+
+                float d0;
+                float d1;
+                float d2;
+
+                foreach (Plane planer in conePlanes)
+                {
+
+                    d0 = planer.GetDistanceToPoint(v0);
+                    d1 = planer.GetDistanceToPoint(v1);
+                    d2 = planer.GetDistanceToPoint(v2);
+
+                    if (d0 > 0)
+                    {
+                        d0inside = false;
+                    }
+                    if (d1 > 0)
+                    {
+                        d1inside = false;
+                    }
+                    if (d2 > 0)
+                    {
+                        d2inside = false;
+                    }
+                }
+                if (d0inside && d1inside && d2inside)
+                {
+                    // Alle Punkte liegen innerhalb des Kegels
+                    newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
+                    newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
+                    newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
+                    continue;
+                }
+            }
+
+            List<Vector3> tempPoints = new();
             for (int i = 0; i < coneTriangles.Length / 3; i++)
             {
                 Vector3 p0 = cone.transform.TransformPoint(coneVertices[coneTriangles[i * 3]]);
@@ -220,10 +270,6 @@ public class MeshSliceDetectorCone : MonoBehaviour
 
                     if (distance > maxDistance)
                     {
-                        //AddTriangle(newVertices, newTriangles, v0, v1, v2);
-                        //newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
-                        //newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
-                        //newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
                         continue;
                     }
 
@@ -238,31 +284,45 @@ public class MeshSliceDetectorCone : MonoBehaviour
                     if (pos && neg)
                     {
 
-                        List<Vector3> tempPoints = new();
-                        if (d0 <= 0) tempPoints.Add(v0);
-                        if (d1 <= 0) tempPoints.Add(v1);
-                        if (d2 <= 0) tempPoints.Add(v2);
+
+                        if (d0 < 0) tempPoints.Add(v0);
+                        if (d1 < 0) tempPoints.Add(v1);
+                        if (d2 < 0) tempPoints.Add(v2);
                         if ((d0 > 0 && d1 < 0) || (d0 < 0 && d1 > 0))
                         {
                             // Schnittpunkt auf Kante v0-v1 berechnen
                             Vector3 intersectionPoint = Vector3.Lerp(v0, v1, Mathf.Abs(d0) / (Mathf.Abs(d0) + Mathf.Abs(d1)));
                             tempPoints.Add(intersectionPoint);
-                            intersectionPoints.Add(intersectionPoint);
+                            //CreatePointMarker(intersectionPoint, Color.yellow, "Intersection0-1");
                         }
                         if ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))
                         {
                             // Schnittpunkt auf Kante v1-v2 berechnen
                             Vector3 intersectionPoint = Vector3.Lerp(v1, v2, Mathf.Abs(d1) / (Mathf.Abs(d1) + Mathf.Abs(d2)));
                             tempPoints.Add(intersectionPoint);
-                            intersectionPoints.Add(intersectionPoint);
+                            //CreatePointMarker(intersectionPoint, Color.yellow, "Intersection1-2");
+
                         }
                         if ((d2 > 0 && d0 < 0) || (d2 < 0 && d0 > 0))
                         {
                             // Schnittpunkt auf Kante v2-v0 berechnen
                             Vector3 intersectionPoint = Vector3.Lerp(v2, v0, Mathf.Abs(d2) / (Mathf.Abs(d2) + Mathf.Abs(d0)));
                             tempPoints.Add(intersectionPoint);
-                            intersectionPoints.Add(intersectionPoint);
                         }
+
+                        foreach (var conePlane in conePlanes)
+                        {
+                            foreach (Vector3 point in tempPoints)
+                            {
+                                if (conePlane.GetDistanceToPoint(point) > 0)
+                                {
+                                    // Punkt liegt außerhalb des Kegels
+                                    tempPoints.Remove(point);
+                                    break;
+                                }
+                            }
+                        }
+
                         if (tempPoints.Count >= 3)
                         {
                             for (int k = 1; k < tempPoints.Count - 1; k++)
@@ -274,17 +334,10 @@ public class MeshSliceDetectorCone : MonoBehaviour
                             tempPoints.Clear();
                         }
                     }
-                    if (!pos && neg)
-                    {
-                        newTriangles.Add(GetOrAddVertex(v0, vertexToIndex, newVertices));
-                        newTriangles.Add(GetOrAddVertex(v1, vertexToIndex, newVertices));
-                        newTriangles.Add(GetOrAddVertex(v2, vertexToIndex, newVertices));
-                    }
                 }
             }
         }
         cutMesh.Clear();
-
 
         for (int k = 0; k < newVertices.Count; k++)
         {
@@ -303,11 +356,18 @@ public class MeshSliceDetectorCone : MonoBehaviour
         MeshCollider meshCollider = GetComponent<MeshCollider>();
         if (meshCollider != null)
         {
-            meshCollider.sharedMesh = cutMesh;
+            meshCollider.enabled = false;
+            meshCollider.sharedMesh = null;
+
+            if (cutMesh != null && cutMesh.vertexCount >= 4 && cutMesh.triangles != null && cutMesh.triangles.Length >= 4)
+            {
+                meshCollider.sharedMesh = cutMesh;
+                meshCollider.enabled = true;
+                if(isPast) meshCollider.convex = true;
+                else meshCollider.convex = false; 
+            }
         }
     }
-
-
 
     void CreateDebugPoints(Vector3 v0, Vector3 v1, Vector3 v2)
     {
