@@ -12,10 +12,14 @@ public class ShiftTime : MonoBehaviour
     public GameObject PresentLight;
     public GameObject PastLight;
     public Shader PastShader;
+    public Shader PastShaderBrick;
+    public Shader PastShaderObject;
     public Shader PresentShader;
-    public Material PastMaterial; // Material for past objects
-    public Material PresentMaterial; // Material for present objects
-    public List<GameObject> PastObjects; // List of objects in the past
+    public Shader PresentShaderBrick;
+    public Shader PresentShaderObject;
+    public List<GameObject> PastBoxObjects; // List of box objects (Boolean Shader & Reverse)
+    public List<GameObject> PastBrickObjects; // List of objects with brick material (Boolean Shader 2 & Reverse 2)
+    public List<GameObject> PastObjects; // List of other objects (Boolean 1 & Reverse 1)
     public CutoutConeController coneController;
 
     void Start()
@@ -23,7 +27,9 @@ public class ShiftTime : MonoBehaviour
         // Enable present light, disable past light
         if (PresentLight != null) PresentLight.SetActive(true); // set lighting for present to true
         if (PastLight != null) PastLight.SetActive(false); // set lighting for past to false
-        ApplyShaderToPresentObjects(); // Apply present shader to all objects in the present
+        ApplyShaderToPresentBoxObjects(); // Apply present shader to all objects in the present
+        ApplyShaderToPresentBoxObjects(); // Apply present shader to all brick objects in the present
+        ApplyShaderToPresentObjects(); // Apply present shader to all other objects in the present
     }
 
     void Update()
@@ -39,6 +45,34 @@ public class ShiftTime : MonoBehaviour
         }
 
     }
+    void ApplyShaderToPastBoxObjects()
+    {
+        foreach (GameObject obj in PastBoxObjects)
+        {
+            if (obj != null)
+            {
+                Renderer renderer = obj.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.shader = PastShader; // Apply the past shader
+                }
+            }
+        }
+    }
+    void ApplyShaderToPastBrickObjects()
+    {
+        foreach (GameObject obj in PastBrickObjects)
+        {
+            if (obj != null)
+            {
+                Renderer renderer = obj.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.shader = PastShaderBrick;
+                }
+            }
+        }
+    }
     void ApplyShaderToPastObjects()
     {
         foreach (GameObject obj in PastObjects)
@@ -48,8 +82,35 @@ public class ShiftTime : MonoBehaviour
                 Renderer renderer = obj.GetComponent<Renderer>();
                 if (renderer != null)
                 {
-                    renderer.material.shader = PastShader; // Apply the past shader
-                    renderer.material = PastMaterial; // Apply the past material
+                    renderer.material.shader = PastShaderObject;
+                }
+            }
+        }
+    }
+    void ApplyShaderToPresentBoxObjects()
+    {
+        foreach (GameObject obj in PastBoxObjects)
+        {
+            if (obj != null)
+            {
+                Renderer renderer = obj.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.shader = PresentShader; // Apply shader
+                }
+            }
+        }
+    }
+    void ApplyShaderToPresentBricks()
+    {
+        foreach (GameObject obj in PastBrickObjects)
+        {
+            if (obj != null)
+            {
+                Renderer renderer = obj.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.shader = PresentShaderBrick;
                 }
             }
         }
@@ -63,12 +124,12 @@ public class ShiftTime : MonoBehaviour
                 Renderer renderer = obj.GetComponent<Renderer>();
                 if (renderer != null)
                 {
-                    renderer.material.shader = PresentShader; // Apply the present shader
-                    renderer.material = PresentMaterial; // Apply the present material
+                    renderer.material.shader = PresentShaderObject;
                 }
             }
         }
     }
+
     void ShiftTimeToPast()
     {
         inPast = true;
@@ -77,8 +138,10 @@ public class ShiftTime : MonoBehaviour
         // switch lights
         if (PresentLight != null) PresentLight.SetActive(false); // set directional light for present to false
         if (PastLight != null) PastLight.SetActive(true); // set area light for past to true
-        ApplyShaderToPastObjects(); // Apply past shader to all objects in the past
-        coneController.RefreshMateirals(); // Refresh materials in the cutout cone controller
+        ApplyShaderToPastBoxObjects(); // Apply past shader to all objects in the past
+        ApplyShaderToPastBrickObjects(); // Apply past shader to all brick objects in the past
+        ApplyShaderToPastObjects(); // Apply past shader to all other objects in the past
+        coneController.RefreshMaterials(); // Refresh materials in the cutout cone controller
         Invoke("ResetReady", 2f); // Reset ready state after 2 second
         Debug.Log("Time shifted to the past.");
     }
@@ -90,8 +153,10 @@ public class ShiftTime : MonoBehaviour
         // switch lights
         if (PresentLight != null) PresentLight.SetActive(true); // set directional light for present to true
         if (PastLight != null) PastLight.SetActive(false); // set area light for past to false
-        ApplyShaderToPresentObjects(); // Apply present shader to all objects in the past
-        coneController.RefreshMateirals(); // Refresh materials in the cutout cone controller
+        ApplyShaderToPresentBoxObjects(); // Apply present shader to all objects in the past
+        ApplyShaderToPresentBricks(); // Apply present shader to all brick objects in the past
+        ApplyShaderToPresentObjects(); // Apply present shader to all other objects in the past
+        coneController.RefreshMaterials(); // Refresh materials in the cutout cone controller
         Invoke("ResetReady", 2f); // Reset ready state after 2 second
         Debug.Log("Time shifted to the present.");
     }
