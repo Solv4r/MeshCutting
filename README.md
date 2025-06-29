@@ -8,13 +8,10 @@ Namen der Teammitglieder:
 Besonderheiten des Projekts:
 	Zum Starten des Projekts PresentFutureTesting Szene öffnen und starten. Es kann sein, dass das Material bei der Treppe auf der rechten Seite fehlt. Ist das der Fall dann einfach unter Assets/materials/Used Materials in Map/Shader2
 	auf Basemap/LowerLevels/Right Stair Case Base sowie Left&Right boarder drag'n droppen
-
 	Character mit WASD steuern (shift für sprint)
 	Um Scheinwerfer an andere Position zu steuern in die Nähe laufen und mit "E" umschalten
 	Um Zeit zu wechseln zum Podest mit Buch laufen und in der Nähe "F" betätigen (2 sek cooldown)
-	
 	Wenn die Zeit gewechselt wird sind Objekte nur im Scheinwerfer sichtbar und wenn wieder zurück gewechselt wird sind sie wieder nur außerhalb des Lichtkegels sichtbar
-	
 	Objekte sollen sowohl visuell als auch physisch geschnitten werden damit neue Objekte entstehen und man durch "halbe" Objekte hindurchgehen kann 
 
 Besondere Leistungen, Herausforderungen und gesammelte Erfahrungen während des Projekts. Was hat die meiste Zeit gekostet?
@@ -58,22 +55,21 @@ Cutout shader sind alle auf dem gleichen Prinzip aufgebaut:
 		1 Branch Node -> Wenn er im Kegel liegt Alpha 0 (unischtbar) sonst Alpha 1 (sichtbar)
 		2 Alpha Clip Threshhold -> entfernt alle Pixel deren Alpha keliner ist als der Schwellenwert
 		3 Andere Parameter (Color, Smoothness usw) steuern Aussehen 
-
 	Zum cutten von den Schalen auf der Treppe wird beim gleichen Shader noch eine Farbe per Farbnode hinzugefügt & für die Treppe wird zusätzlich noch ein Tiling Parameter (für die Textur) und die Textur selbst in den Farbkanal gegeben (siehe Cutout Shader BOOLEAN 2)
 
 Verwendete Assets, Codefragmente, Inspiration. Alles was Sie nicht selbst gemacht haben bitte unbedingt angeben.
 
-	YughuesFreeMetalMaterials: 	https://assetstore.unity.com/packages/2d/textures-materials/metals/yughues-free-metal-materials-12949
-	YughuesFreePavementMaterials:	https://assetstore.unity.com/packages/2d/textures-materials/roads/yughues-free-pavement-materials-12952
-	Inspiration Meshcutting: https://www.youtube.com/watch?v=BVCNDUcnE1o
-	Meshcutting mit einer Plane die durch ein Objekt schneidet: https://github.com/ElasticSea/VR-Slice
-	CharacterModell: Diese Modelle werden hier vom Entwickler für fair use zur Verfügung gestellt: https://www.aplaybox.com/u/516827875 (Chinesische Webseite, Login notwendig)
-	(Von Fans zur Verfügung gestellte Download Links zu den Modellen: https://www.reddit.com/r/HonkaiStarRail/comments/132dshx/honkai_star_rail_official_mmd_models/ https://drive.google.com/drive/u/0/folders/1UZnuFJZZqiYws2geifYxAZI3a98abl6x)
-	Character Shader: https://github.com/ColinLeung-NiloCat/UnityURPToonLitShaderExample (Example Version die hier zur Verfügung gestellt wird)
-	Animationen: ThirdPersonController Starter Asset, welches wir auch in der Vorlesung benutzt haben
+YughuesFreeMetalMaterials: 	https://assetstore.unity.com/packages/2d/textures-materials/metals/yughues-free-metal-materials-12949
+YughuesFreePavementMaterials:	https://assetstore.unity.com/packages/2d/textures-materials/roads/yughues-free-pavement-materials-12952
+Inspiration Meshcutting: https://www.youtube.com/watch?v=BVCNDUcnE1o
+Meshcutting mit einer Plane die durch ein Objekt schneidet: https://github.com/ElasticSea/VR-Slice
+CharacterModell: Diese Modelle werden hier vom Entwickler für fair use zur Verfügung gestellt: https://www.aplaybox.com/u/516827875 (Chinesische Webseite, Login notwendig)
+(Von Fans zur Verfügung gestellte Download Links zu den Modellen: https://www.reddit.com/r/HonkaiStarRail/comments/132dshx/honkai_star_rail_official_mmd_models/ https://drive.google.com/drive/u/0/folders/1UZnuFJZZqiYws2geifYxAZI3a98abl6x)
+Character Shader: https://github.com/ColinLeung-NiloCat/UnityURPToonLitShaderExample (Example Version die hier zur Verfügung gestellt wird)
+Animationen: ThirdPersonController Starter Asset, welches wir auch in der Vorlesung benutzt haben
 
 Eigens erstellte Assets 
-	Keine
+Keine
 
 Link zu einem kurzen Video (ca. 60-120s), welches das Projekt und seine Features in Action zeigt
 Video Link: https://youtu.be/0HRrqYYI0xE
